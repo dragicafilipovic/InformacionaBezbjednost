@@ -18,6 +18,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -38,6 +39,9 @@ import ib.project.service.CustomUsrDetailsService;
 public class AuthenticationController {
 	@Autowired
     TokenHelper tokenHelper;
+	
+	@Autowired
+	PasswordEncoder passwordEncoder;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -56,7 +60,7 @@ public class AuthenticationController {
             HttpServletResponse response,
             Device device
     ) throws AuthenticationException, IOException {
-
+    	System.out.println(passwordEncoder.encode("12345"));
         // Izvrsavanje security dela
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

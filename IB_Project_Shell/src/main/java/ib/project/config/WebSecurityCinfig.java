@@ -66,6 +66,7 @@ public class WebSecurityCinfig extends WebSecurityConfigurerAdapter {
 				.exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint).and().authorizeRequests()
 				// svim korisnicima dopusti da pristupe putanjama /auth/**
 				.antMatchers("/auth/**").permitAll()
+				.antMatchers(HttpMethod.POST,"/api/user/create").permitAll()
 				// svaki zahtev mora biti autorizovan
 				.anyRequest().authenticated().and()
 				// presretni svaki zahtev filterom
@@ -79,9 +80,20 @@ public class WebSecurityCinfig extends WebSecurityConfigurerAdapter {
 	@Override
 	public void configure(WebSecurity web) throws Exception {
 		// TokenAuthenticationFilter ce ignorisati sve ispod navedene putanje
-		web.ignoring().antMatchers(HttpMethod.POST, "/auth/login");
-		web.ignoring().antMatchers(HttpMethod.GET, "/", "/webjars/**", "/*.html", "/favicon.ico", "/**/*.html",
-				"/**/*.css", "/**/*.js");
+		web.ignoring().antMatchers(HttpMethod.POST,
+				"/auth/login",
+				"/api/user/create");
+		web.ignoring().antMatchers(
+				HttpMethod.GET,
+				"/",
+				"/webjars/**",
+				"/*.html",
+				"/favicon.ico",
+				"/**/*.html",
+				"/**/*.css",
+				"/**/*.js");
+		
+		
 
 	}
 }

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import ib.project.model.Authority;
@@ -29,7 +30,7 @@ import ib.project.service.AuthorityService;
 import ib.project.service.UserService;
 
 @RestController
-@RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/user")
 public class UserController {
 
 	@Autowired
@@ -44,13 +45,13 @@ public class UserController {
 	// Za pristup ovoj metodi neophodno je da ulogovani korisnik ima ADMIN ulogu
 	// Ukoliko nema, server ce vratiti gresku 403 Forbidden
 	// Korisnik jeste autentifikovan, ali nije autorizovan da pristupi resursu
-	@RequestMapping(method = GET, value = "/user/{userId}")
+	@RequestMapping(method = GET, value = "/{userId}")
 	@PreAuthorize("hasRole('ADMIN')")
 	public User loadById(@PathVariable Integer userId) {
 		return this.userService.findById(userId);
 	}
 
-	@RequestMapping(method = GET, value = "/user/all")
+	@RequestMapping(method = GET, value = "/all")
 	@PreAuthorize("hasRole('ADMIN')")
 	public List<User> loadAll() {
 		return this.userService.findAll();
@@ -61,16 +62,29 @@ public class UserController {
 	public User user(Principal user) {
 		return this.userService.findByEmail(user.getName());
 	}
-	
+
 	@GetMapping
-    public ResponseEntity<List<UserDTO>> getUsers(){
-        List<User> users=userService.findAll();
-        List<UserDTO> userDTOS=new ArrayList<>();
-        for (User u:users) {
-        	userDTOS.add(new UserDTO(u));
-        }
-        return new ResponseEntity<List<UserDTO>>(userDTOS,HttpStatus.OK);
-    }
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<List<UserDTO>> getUsers() {
+		List<User> users = userService.findAll();
+		List<UserDTO> userDTOS = new ArrayList<>();
+		for (User u : users) {
+			userDTOS.add(new UserDTO(u));
+		}
+		return new ResponseEntity<List<UserDTO>>(userDTOS, HttpStatus.OK);
+	}
+
+	@GetMapping(value = "/all/active")
+	@PreAuthorize("hasRole('USER')")
+	public ResponseEntity<List<UserDTO>> getAllActive() {
+		List<UserDTO> active = new ArrayList<>();
+		List<User> all = userService.findAll();
+		for (User user : all) {
+			if (user.isActive())
+				active.add(new UserDTO(user));
+		}
+		return new ResponseEntity<List<UserDTO>>(active, HttpStatus.OK);
+	}
 
 	@PostMapping(value = "/create", consumes = "application/json")
 	public ResponseEntity<User> saveUser(@RequestBody User user) {
@@ -80,14 +94,14 @@ public class UserController {
 		u.setEmail(user.getEmail());
 		u.setActive(false);
 		u.setCertificate("");
-		Authority authority = authorityService.findByName("ROLE_REGULAR");
-		u.getUser_authorities().add(authority);
 		u = userService.save(u);
+		Authority authority = authorityService.findByName("ROLE_USER");
+		u.getUser_authorities().add(authority);
 		return new ResponseEntity<User>(u, HttpStatus.CREATED);
 	}
 
-	@PutMapping(value = "/edit/{email}", consumes = "application/json")
-	public ResponseEntity<UserDTO> updateUser(UserDTO userDTO, @PathParam("email") String email) {
+	@PutMapping(value = "/edit", consumes = "application/json")
+	public ResponseEntity<UserDTO> updateUser(@RequestBody String email) {
 		User user = userService.findByEmail(email);
 		System.out.println("Pronadjeni user: " + user);
 		if (user == null)

@@ -1,75 +1,51 @@
 @charset "UTF-8";
 
-body {
-	margin: 0;
-	padding: 0;
-	font-style: sans-serif;
-}
-
 .login-box {
-	width: 320px;
-	height: 350px;
-	background: rgba(0, 0, 0, 0.5);
-	color: #fff;
-	top: 50%;
-	left: 50%;
-	position: absolute;
-	transform: translate(-50%,-50%);
-	box-sizing: border-box;
-	padding: 70px 30px;
-}
-
-.avatar {
-	width: 100px;
-	height: 100px;
-	border-radius: 50%;
-	position: absolute;
-	top: -50px;
-	left: calc(50% - 50px);
-}
-
-h1 {
-	margin: 0;
-	padding: 0 0 20px;
-	text-align: center;
-	font-size: 23px;
-}
-
-.login-box p {
-	margin: 0;
-	padding: 0;
-	font-weight: bold;
+  width: 50%;
+  float: left;
+  background: #efeff5;
+  box-sizing: border-box;
+  top: 50%;
+  left: 50%;
+  position: absolute;
+  transform: translate(-50%,-50%);
+  padding: 0px 30px;
+  margin: 20px;
+  box-shadow: 0px 2px 8px 0px #333;
+  height: 400px;
 }
 
 .login-box input {
 	width: 100%;
 	margin-bottom: 20px;
+	color: black;
 }
 
 .login-box input[type="text"], input[type="password"]
 {
 	border: none;
 	border-bottom: 1px solid #fff;
-	background: transparent;
+/*	background: transparent;*/
 	outline: none;
 	height: 40px;
-	color: #88001b;
+	/*color: #88001b;*/
 	font-size: 16px;
 }
 
-.login-box input[type="submit"] 
+.login-box input[type="submit"]
 {
 	border: none;
 	outline: none;
 	height: 40px;
-	background: #88001b;
+	background: #777;
 	border-radius: 20px;
 	font-size: 18px;
 }
 
-.login-box input[type="submit"]:hover
-{
-	cursor: pointer;
-	background: #ae7a7a;
-	color: #000;
+#register {
+	margin-left: 45%;
+    font-size: 22px;
+    color: black;
+    font-weight: bold;
+    text-decoration: none;
 }

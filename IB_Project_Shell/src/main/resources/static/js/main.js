@@ -7,9 +7,9 @@ $(document).ready(function(){
 		var email = emailInput.val();
 		var pass = passwordInput.val();
 		var json = {
-				'email': emailInput,
-				'pass': passwordInput
-		}
+				'username': email,
+				'password': pass
+		};
 			
 		$.ajax({
 			type : "POST",
@@ -26,6 +26,7 @@ $(document).ready(function(){
 					headers: { "Authorization": "Bearer " + token},
 					contentType : "application/json",
 					success : function(data) {
+						alert("Uspeh");
 						console.log(data);
 						if(data.active == true){
 							localStorage.setItem("token", token);
