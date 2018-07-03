@@ -92,8 +92,5 @@ public class WebSecurityCinfig extends WebSecurityConfigurerAdapter {
 				"/**/*.html",
 				"/**/*.css",
 				"/**/*.js");
-		
-		
-
 	}
 }

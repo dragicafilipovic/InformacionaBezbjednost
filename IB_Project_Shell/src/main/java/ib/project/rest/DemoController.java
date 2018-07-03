@@ -16,9 +16,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import ib.project.model.User;
+import ib.project.service.UserService;
 
 @RestController
 @RequestMapping(value = "/api/demo", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -28,6 +32,9 @@ public class DemoController {
 
 	@Autowired
 	ServletContext context;
+	
+	@Autowired
+	private UserService userService;
 
 	static {
 		ResourceBundle rb = ResourceBundle.getBundle("application");
@@ -48,7 +55,7 @@ public class DemoController {
 	}
 
 	@RequestMapping(value = "/download", method = RequestMethod.GET)
-	public ResponseEntity<byte[]> download() {
+	public ResponseEntity<byte[]> preuzimanje() {
 
 		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
 
@@ -113,5 +120,38 @@ public class DemoController {
 		}
 
 		return file;
+	}
+	
+	@RequestMapping(value = "/download/{email}", method = RequestMethod.GET)
+	public ResponseEntity<byte[]> download(@PathVariable("email") String email) {
+		System.out.println(email);
+		User user = userService.findByEmail(email + ".com") ; 
+		File file = new File("C:\\Users\\lenovo\\Desktop\\BezbjednostGit\\IB_Project_Shell\\data\\"+ user.getCertificate()+".cer");
+		String n= DATA_DIR_PATH + File.separator + "demo.text";
+		
+		byte[] resource = n.getBytes();
+		
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.add("filename", user.getCertificate()+".cer");
+
+		byte[] bFile = readBytesFromFile(file.toString());
+
+		return ResponseEntity.ok().headers(headers).body(bFile);
+	}
+	
+	@RequestMapping(value = "/downloadJKS/{email}", method = RequestMethod.GET)
+	public ResponseEntity<byte[]> downloadJKS(@PathVariable("email") String email) {
+		User user = userService.findByEmail(email + ".com"); 
+		File file = new File("C:\\Users\\lenovo\\Desktop\\BezbjednostGit\\IB_Project_Shell\\data\\"+ user.getId()+".jks");
+		String n= DATA_DIR_PATH + File.separator + "demo.text";
+		
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.add("filename", user.getId()+".jks");
+
+		byte[] bFile = readBytesFromFile(file.toString());
+
+		return ResponseEntity.ok().headers(headers).body(bFile);
 	}
 }

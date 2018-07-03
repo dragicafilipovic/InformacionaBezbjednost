@@ -14,19 +14,18 @@ $(document).ready(function(){
 		$.ajax({
 			type : "POST",
 			contentType : "application/json",
-			url :"http://localhost:8443/auth/login",
+			url :"https://localhost:8443/auth/login",
 			data :  JSON.stringify(json),
 			dataType : 'json',
 			success : function(data) {
 				console.log(data);
 				var token = data.access_token;
 				$.ajax({
-					url: "http://localhost:8443/api/user/whoami",
+					url: "https	://localhost:8443/api/user/whoami",
 					type: 'GET',
 					headers: { "Authorization": "Bearer " + token},
 					contentType : "application/json",
-					success : function(data) {
-						alert("Uspeh");
+					success : function(data) {	
 						console.log(data);
 						if(data.active == true){
 							localStorage.setItem("token", token);

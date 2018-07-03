@@ -6,11 +6,9 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.websocket.server.PathParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import ib.project.model.Authority;
@@ -94,9 +91,9 @@ public class UserController {
 		u.setEmail(user.getEmail());
 		u.setActive(false);
 		u.setCertificate("");
-		u = userService.save(u);
 		Authority authority = authorityService.findByName("ROLE_USER");
 		u.getUser_authorities().add(authority);
+		u = userService.save(u);
 		return new ResponseEntity<User>(u, HttpStatus.CREATED);
 	}
 

@@ -14,7 +14,7 @@ $(document).ready(function(){
 		$.ajax({
 			type : "POST",
 			contentType : "application/json",
-			url :"http://localhost:8443/api/user/create",
+			url :"https://localhost:8443/api/user/create",
 			data :  JSON.stringify(param),
 			dataType : 'json',
 			success : function(result) {

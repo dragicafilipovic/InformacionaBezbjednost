@@ -7,7 +7,7 @@ $(document).ready(function(){
 	console.log(token);
 	
 	$.ajax({
-		url: "http://localhost:8443/api/user/whoami",
+		url: "https://localhost:8443/api/user/whoami",
 		type: 'GET',
 		headers: { "Authorization": "Bearer " + token},
 		contentType : "application/json",
@@ -23,7 +23,7 @@ $(document).ready(function(){
 	});
 	
 	$.ajax({
-		url: "http://localhost:8443/api/user",
+		url: "https://localhost:8443/api/user",
 		type: 'GET',
 		headers: { "Authorization": "Bearer " + token},
 		contentType : "application/json",
@@ -32,7 +32,8 @@ $(document).ready(function(){
 				user = data[i];
 				row.append("<div class='column'>" + 
 	  					"<a id='emailUser' href='#'>"+user.email+"</a><br>" +
-	  					"<button id='downloadSertifikat'>Download certificate</button><br>" +
+	  					"<button id='downloadSertifikat' onClick='downloadSertificate()'>Download certificate</button><br>" +
+	  					"<button id='downloadJKS'>Download JKS</button><br>" +
 	  					"<p></p>"
 	  					);
 				if(admin == true && user.active == false){
@@ -50,7 +51,7 @@ $(document).ready(function(){
 	});
 	
 	$.ajax({
-		url: "http://localhost:8443/api/user/all/active",
+		url: "https://localhost:8443/api/user/all/active",
 		type: 'GET',
 		headers: { "Authorization": "Bearer " + token},
 		contentType : "application/json",
@@ -59,7 +60,8 @@ $(document).ready(function(){
 				user = data[i];
 				row.append("<div class='column'>" + 
 	  					"<a id='emailUser' href='#'>"+user.email+"</a><br>" +
-	  					"<button id='downloadSertifikat'>Download certificate</button><br>" +
+	  					"<button id='downloadSertifikat' onClick='downloadSertificate()'>Download certificate</button><br>" +
+	  					"<button id='downloadJKS' onClick='downloadJKS()'>Download JKS</button><br>" +
 	  					"<p></p>"
 	  					);
 				row.append("</div>");		
@@ -74,7 +76,7 @@ $(document).ready(function(){
 		var email = $(this).attr('name');
 		console.log("Prosledjeni email: " + email);
 		$.ajax({
-			url: "http://localhost:8443/api/user/edit",
+			url: "https://localhost:8443/api/user/edit",
 			type: 'PUT',
 			data : email,
 			headers: { "Authorization": "Bearer " + token},
@@ -110,3 +112,81 @@ function f(){
 		  }
 	});
 }
+
+function downloadSertificate() {
+	var token = localStorage.getItem("token");
+	
+	$.ajax({
+		url: "https://localhost:8443/api/user/whoami",
+		type: 'GET',
+		headers: { "Authorization": "Bearer " + token},
+		contentType : "application/json",
+		success : function(data) {
+			console.log(data);
+			logged = data;
+			var xhr = new XMLHttpRequest();
+			xhr.open('GET', "/api/demo/download/"+logged.email, true);
+			xhr.responseType = 'blob';
+			xhr.setRequestHeader("Authorization", "Bearer " + token);
+			xhr.onload = function(e) {
+				if (this.status == 200) {
+					var blob = this.response;
+					console.log(blob);
+					var a = document.createElement('a');
+					var url = window.URL.createObjectURL(blob);
+					a.href = url;
+					a.download = xhr.getResponseHeader('filename');
+					a.click();
+					window.URL.revokeObjectURL(url);
+				}
+			};
+
+			xhr.send();
+			console.log(logged);	
+		},
+		error : function(e) {
+			admin=true;
+			console.log("ERROR: ", e);
+		}	
+	});
+	
+};
+
+function downloadJKS() {
+	
+var token = localStorage.getItem("token");
+	
+	$.ajax({
+		url: "https://localhost:8443/api/user/whoami",
+		type: 'GET',
+		headers: { "Authorization": "Bearer " + token},
+		contentType : "application/json",
+		success : function(data) {
+			console.log(data);
+			logged = data;
+			var xhr = new XMLHttpRequest();
+			xhr.open('GET', "/api/demo/downloadJKS/"+logged.email, true);
+			xhr.responseType = 'blob';
+			xhr.setRequestHeader("Authorization", "Bearer " + token);
+			xhr.onload = function(e) {
+				if (this.status == 200) {
+					var blob = this.response;
+					console.log(blob);
+					var a = document.createElement('a');
+					var url = window.URL.createObjectURL(blob);
+					a.href = url;
+					a.download = xhr.getResponseHeader('filename');
+					a.click();
+					window.URL.revokeObjectURL(url);
+				}
+			};
+
+			xhr.send();
+			console.log(logged);	
+		},
+		error : function(e) {
+			admin=true;
+			console.log("ERROR: ", e);
+		}	
+	});
+};

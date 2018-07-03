@@ -125,7 +125,7 @@ button {
   margin-left: 20%;
 }
 
-#downloadSertifikat, #setActiveUser{
+#downloadSertifikat, #setActiveUser, #downloadJKS{
 	float: left;
 	border: none;
 	background: white;
@@ -155,13 +155,14 @@ button {
 	margin-left: 50px;
 }
 
-#downloadSertifikat {
+#downloadSertifikat, #downloadJKS {
 	height: 50px;
 	background: #33d6ff;
 	border-radius: 0;
 	color: white;
 	padding: 5px;
 	margin-right: 5px;
+	width: 150px;
 }
 
 #setActiveUser{
@@ -179,4 +180,8 @@ button {
 	text-decoration: none;
 	color: black;
 	font-size: 18px;
+}
+
+#downloadJKS{
+	margin-top: 5px;
 }
